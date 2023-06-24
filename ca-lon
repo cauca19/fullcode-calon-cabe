@@ -1,0 +1,65 @@
+<?php
+// Function to start the game
+function startGame() {
+    $playerScore = 0;
+    $highestScore = getHighestScore();
+
+    echo "Welcome to Big Fish Eat Small Fish!\n";
+    echo "Highest Score: $highestScore\n";
+
+    while (true) {
+        $smallFishSize = rand(1, 5); // Generate a random size for the small fish
+        $bigFishSize = rand(6, 10); // Generate a random size for the big fish
+
+        echo "\nA small fish (Size: $smallFishSize) appears!\n";
+        echo "A big fish (Size: $bigFishSize) is chasing it!\n";
+
+        $choice = '';
+
+        while ($choice != '1' && $choice != '2') {
+            echo "What will you do?\n";
+            echo "1. Let the small fish escape\n";
+            echo "2. Try to eat the small fish\n";
+            echo "Enter your choice (1-2): ";
+            $choice = trim(fgets(STDIN));
+        }
+
+        if ($choice == '2') {
+            if ($bigFishSize > $smallFishSize) {
+                echo "Congratulations! You ate the small fish!\n";
+                $playerScore += $smallFishSize;
+
+                if ($playerScore > $highestScore) {
+                    $highestScore = $playerScore;
+                    updateHighestScore($highestScore);
+                    echo "New highest score! Congratulations!\n";
+                }
+            } else {
+                echo "Oh no! The big fish ate you!\n";
+                echo "Game Over. Your Score: $playerScore\n";
+                break;
+            }
+        } else {
+            echo "You let the small fish escape.\n";
+        }
+    }
+}
+
+// Function to retrieve the highest score
+function getHighestScore() {
+    if (file_exists('highest_score.txt')) {
+        $content = file_get_contents('highest_score.txt');
+        return (int) $content;
+    }
+
+    return 0;
+}
+
+// Function to update the highest score
+function updateHighestScore($score) {
+    file_put_contents('highest_score.txt', $score);
+}
+
+// Start the game
+startGame();
+?>
